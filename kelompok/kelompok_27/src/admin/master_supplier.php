@@ -1,12 +1,9 @@
 <?php
-// PASTIKAN PATH INI BENAR!
-include('../layout/header.php'); 
-include('../layout/sidebar.php'); 
-include('../config/koneksi.php'); 
+include('../config/koneksi.php');
+include('../layout/header.php');
 
-// LOGIKA READ (Mengambil data supplier aktif) - Commit 6.2
 $query = "SELECT id_supplier, nama_supplier, no_hp, kategori FROM suppliers WHERE is_active = '1' ORDER BY id_supplier DESC";
-$result = mysqli_query($koneksi, $query);
+$result = mysqli_query($conn, $query);
 
 $suppliers = [];
 if ($result) {
@@ -15,20 +12,94 @@ if ($result) {
     }
 }
 
-// Notifikasi Status (Commit 6.6)
 $status = $_GET['status'] ?? '';
 $pesan = $_GET['pesan'] ?? '';
 ?>
 
-<div class="content-wrapper">
-    <section class="content-header">
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .content-wrapper {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        margin-left: 280px;
+        min-height: 100vh;
+        padding: 30px;
+        width: calc(100% - 280px);
+    }
+    
+    .content-header h1 {
+        color: #1B3C53;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+    
+    .card {
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #1B3C53 0%, #2F5C83 100%);
+        border: none;
+        color: white;
+    }
+    
+    .card-header .card-title {
+        color: white;
+        margin: 0;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1B3C53 0%, #2F5C83 100%);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(27, 60, 83, 0.3);
+    }
+    
+    .table thead th {
+        background: #f8f9fa;
+        color: #1B3C53;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .badge-info {
+        background-color: #0dcaf0;
+    }
+    
+    .badge-warning {
+        background-color: #ffc107;
+        color: #333;
+    }
+</style>
+
+<div class="wrapper" style="display: flex; min-height: 100vh;">
+    <?php include('../layout/sidebar.php'); ?>
+    
+    <div class="content-wrapper" style="flex: 1; margin-left: 0; width: auto; padding: 30px;">
+        <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Master Data Supplier/Vendor</h1>
+                    <h1><i class="fas fa-truck"></i> Master Data Supplier/Vendor</h1>
                 </div>
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
+                    <ol class="breadcrumb float-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
                         <li class="breadcrumb-item active">Master Supplier</li>
                     </ol>
@@ -37,17 +108,16 @@ $pesan = $_GET['pesan'] ?? '';
         </div>
     </section>
 
+    <?php if ($status && $pesan): ?>
+        <div class="alert alert-<?= $status == 'sukses' ? 'success' : 'danger'; ?> alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($pesan); ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+    
     <section class="content">
-        
-        <?php if ($status && $pesan): ?>
-            <div class="alert alert-<?= $status == 'sukses' ? 'success' : 'danger'; ?> alert-dismissible fade show mx-3" role="alert">
-                <?= htmlspecialchars($pesan); ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        <?php endif; ?>
-        
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Daftar Supplier Aktif</h3>
@@ -104,10 +174,10 @@ $pesan = $_GET['pesan'] ?? '';
     </div>
 <div class="modal fade" id="modalTambahUbah" tabindex="-1" role="dialog" aria-labelledby="modalTambahUbahLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahUbahLabel">Tambah Supplier</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <div class="modal-content" style="border-radius: 12px; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1B3C53 0%, #2F5C83 100%); border: none; color: white;">
+                <h5 class="modal-title" id="modalTambahUbahLabel" style="color: white; font-weight: 600;">Tambah Supplier</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -117,22 +187,22 @@ $pesan = $_GET['pesan'] ?? '';
                     <input type="hidden" name="action" id="action" value="tambah"> 
 
                     <div class="form-group">
-                        <label for="nama_supplier">Nama Supplier</label>
+                        <label for="nama_supplier" style="font-weight: 600; color: #1B3C53;"><i class="fas fa-building"></i> Nama Supplier</label>
                         <input type="text" class="form-control" id="nama_supplier" name="nama_supplier" required>
                     </div>
                     <div class="form-group">
-                        <label for="no_hp">No HP</label>
+                        <label for="no_hp" style="font-weight: 600; color: #1B3C53;"><i class="fas fa-phone"></i> No HP</label>
                         <input type="text" class="form-control" id="no_hp" name="no_hp">
                     </div>
                     <div class="form-group">
-                        <label for="kategori">Kategori</label>
+                        <label for="kategori" style="font-weight: 600; color: #1B3C53;"><i class="fas fa-tag"></i> Kategori</label>
                         <select class="form-control" id="kategori" name="kategori" required>
                             <option value="internal">Internal (Titipan Internal)</option>
                             <option value="eksternal">Eksternal (Titipan Luar)</option>
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" style="border-top: 1px solid #dee2e6;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                     <button type="submit" class="btn btn-primary" id="btnSubmitModal">Simpan</button>
                 </div>
@@ -142,7 +212,6 @@ $pesan = $_GET['pesan'] ?? '';
 </div>
 <script>
 $(document).ready(function() {
-    // 1. Logic untuk tombol Tambah
     $('.btn-primary[data-target="#modalTambahUbah"]').on('click', function() {
         $('#modalTambahUbahLabel').text('Tambah Supplier');
         $('#action').val('tambah');
@@ -153,7 +222,6 @@ $(document).ready(function() {
         $('#btnSubmitModal').text('Simpan');
     });
 
-    // 2. Logic untuk tombol Ubah (Commit 6.5)
     $('.btnUbah').on('click', function() {
         var id = $(this).data('id');
         var nama = $(this).data('nama');
@@ -169,7 +237,6 @@ $(document).ready(function() {
         $('#btnSubmitModal').text('Ubah Data');
     });
     
-    // 3. Inisialisasi DataTable (Commit 6.5)
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
