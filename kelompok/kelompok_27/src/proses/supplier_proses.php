@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (isset($_GET['action']) && $_GET['action'] === 'arsip' && isset($_GET['id'])) {
+    arsipSupplier($koneksi, $_GET['id']);
 }
 
 
@@ -53,6 +54,18 @@ function ubahSupplier($koneksi, $id_supplier, $nama_supplier, $no_hp, $kategori)
     exit();
 }
 
-function arsipSupplier($koneksi, $id) { }
+function arsipSupplier($koneksi, $id_supplier) {
+    $stmt = $koneksi->prepare("UPDATE suppliers SET is_active = '0' WHERE id_supplier = ?");
+    
+    $stmt->bind_param("i", $id_supplier);
+    
+    if ($stmt->execute()) {
+        header("Location: ../admin/master_supplier.php?status=sukses&pesan=Supplier berhasil diarsipkan!");
+    } else {
+        header("Location: ../admin/master_supplier.php?status=error&pesan=Gagal mengarsipkan Supplier: " . $stmt->error);
+    }
+    $stmt->close();
+    exit();
+}
 
 ?>
