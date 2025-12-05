@@ -118,6 +118,40 @@ include('../layout/footer.php');
 <?php
 include('../layout/footer.php'); 
 ?>
+<script>
+$(document).ready(function() {
+    $('.btn-primary[data-target="#modalTambahUbah"]').on('click', function() {
+        $('#modalTambahUbahLabel').text('Tambah Supplier');
+        $('#action').val('tambah');
+        $('#id_supplier').val('');
+        $('#nama_supplier').val('');
+        $('#no_hp').val('');
+        $('#kategori').val('internal'); // Default kategori
+        $('#btnSubmitModal').text('Simpan');
+    });
+
+    $('.btnUbah').on('click', function() {
+        var id = $(this).data('id');
+        var nama = $(this).data('nama');
+        var hp = $(this).data('hp');
+        var kategori = $(this).data('kategori');
+
+        $('#modalTambahUbahLabel').text('Ubah Supplier');
+        $('#action').val('ubah');
+        $('#id_supplier').val(id);
+        $('#nama_supplier').val(nama);
+        $('#no_hp').val(hp);
+        $('#kategori').val(kategori);
+        $('#btnSubmitModal').text('Ubah Data');
+    });
+    
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+});
+</script>
+
 <?php
 include('../layout/footer.php'); 
 ?>
