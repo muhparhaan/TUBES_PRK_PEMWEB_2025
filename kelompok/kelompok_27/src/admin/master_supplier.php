@@ -1,12 +1,23 @@
 <?php
+// PASTIKAN PATH INI BENAR!
 include('../layout/header.php'); 
 include('../layout/sidebar.php'); 
 include('../config/koneksi.php'); 
 
+// LOGIKA READ (Mengambil data supplier aktif) - Commit 6.2
+$query = "SELECT id_supplier, nama_supplier, no_hp, kategori FROM suppliers WHERE is_active = '1' ORDER BY id_supplier DESC";
+$result = mysqli_query($koneksi, $query);
+
+$suppliers = [];
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $suppliers[] = $row;
+    }
+}
+
+// Notifikasi Status (Commit 6.6)
 $status = $_GET['status'] ?? '';
 $pesan = $_GET['pesan'] ?? '';
-
-
 ?>
 
 <div class="content-wrapper">
@@ -27,52 +38,67 @@ $pesan = $_GET['pesan'] ?? '';
     </section>
 
     <section class="content">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Daftar Supplier Aktif</h3>
+        
+        <?php if ($status && $pesan): ?>
+            <div class="alert alert-<?= $status == 'sukses' ? 'success' : 'danger'; ?> alert-dismissible fade show mx-3" role="alert">
+                <?= htmlspecialchars($pesan); ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <?php
-include('../layout/header.php'); 
-include('../layout/sidebar.php'); 
-include('../config/koneksi.php'); 
-
-$status = $_GET['status'] ?? '';
-$pesan = $_GET['pesan'] ?? '';
-
-
-?>
-
-<div class="content-wrapper">
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Master Data Supplier/Vendor</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Master Supplier</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="content">
+        <?php endif; ?>
+        
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Daftar Supplier Aktif</h3>
             </div>
             <div class="card-body">
-                </div>
-        </div>
-    </section>
-    </div>
-<?php
-
-include('../layout/footer.php'); 
-?>
+                <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalTambahUbah">
+                    <i class="fas fa-plus"></i> Tambah Supplier
+                </button>
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Supplier</th>
+                            <th>No HP</th>
+                            <th>Kategori</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $no = 1; ?>
+                        <?php foreach ($suppliers as $supplier): ?>
+                        <tr>
+                            <td><?= $no++; ?></td>
+                            <td><?= htmlspecialchars($supplier['nama_supplier']); ?></td>
+                            <td><?= htmlspecialchars($supplier['no_hp']); ?></td>
+                            <td>
+                                <?php 
+                                    $badge_class = ($supplier['kategori'] == 'internal') ? 'badge-info' : 'badge-warning';
+                                ?>
+                                <span class="badge <?= $badge_class ?>"><?= ucfirst(htmlspecialchars($supplier['kategori'])); ?></span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-warning btnUbah" 
+                                        data-id="<?= $supplier['id_supplier']; ?>" 
+                                        data-nama="<?= htmlspecialchars($supplier['nama_supplier']); ?>" 
+                                        data-hp="<?= htmlspecialchars($supplier['no_hp']); ?>" 
+                                        data-kategori="<?= htmlspecialchars($supplier['kategori']); ?>" 
+                                        data-toggle="modal" data-target="#modalTambahUbah">
+                                    <i class="fas fa-edit"></i> Ubah
+                                </button>
+                                <a href="../proses/supplier_proses.php?action=arsip&id=<?= $supplier['id_supplier']; ?>" 
+                                   class="btn btn-sm btn-danger" 
+                                   onclick="return confirm('Anda yakin ingin mengarsipkan Supplier ini?')">
+                                    <i class="fas fa-archive"></i> Arsip
+                                </a>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
     </div>
@@ -88,7 +114,6 @@ include('../layout/footer.php');
             <form action="../proses/supplier_proses.php" method="POST">
                 <div class="modal-body">
                     <input type="hidden" name="id_supplier" id="id_supplier">
-                    
                     <input type="hidden" name="action" id="action" value="tambah"> 
 
                     <div class="form-group">
@@ -115,21 +140,20 @@ include('../layout/footer.php');
         </div>
     </div>
 </div>
-<?php
-include('../layout/footer.php'); 
-?>
 <script>
 $(document).ready(function() {
+    // 1. Logic untuk tombol Tambah
     $('.btn-primary[data-target="#modalTambahUbah"]').on('click', function() {
         $('#modalTambahUbahLabel').text('Tambah Supplier');
         $('#action').val('tambah');
         $('#id_supplier').val('');
         $('#nama_supplier').val('');
         $('#no_hp').val('');
-        $('#kategori').val('internal'); // Default kategori
+        $('#kategori').val('internal');
         $('#btnSubmitModal').text('Simpan');
     });
 
+    // 2. Logic untuk tombol Ubah (Commit 6.5)
     $('.btnUbah').on('click', function() {
         var id = $(this).data('id');
         var nama = $(this).data('nama');
@@ -145,6 +169,7 @@ $(document).ready(function() {
         $('#btnSubmitModal').text('Ubah Data');
     });
     
+    // 3. Inisialisasi DataTable (Commit 6.5)
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
