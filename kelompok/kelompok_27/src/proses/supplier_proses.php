@@ -10,10 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     switch ($action) {
         case 'tambah':
-            tambahSupplier($koneksi, $nama_supplier, $no_hp, $kategori);
+            tambahSupplier($conn, $nama_supplier, $no_hp, $kategori);
             break;
         case 'ubah':
-            ubahSupplier($koneksi, $id_supplier, $nama_supplier, $no_hp, $kategori);
+            ubahSupplier($conn, $id_supplier, $nama_supplier, $no_hp, $kategori);
             break;
         default:
             header("Location: ../admin/master_supplier.php?status=error&pesan=Aksi tidak dikenal");
@@ -22,12 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (isset($_GET['action']) && $_GET['action'] === 'arsip' && isset($_GET['id'])) {
-    arsipSupplier($koneksi, $_GET['id']);
+    arsipSupplier($conn, $_GET['id']);
 }
 
 
-function tambahSupplier($koneksi, $nama_supplier, $no_hp, $kategori) {
-    $stmt = $koneksi->prepare("INSERT INTO suppliers (nama_supplier, no_hp, kategori) VALUES (?, ?, ?)");
+function tambahSupplier($conn, $nama_supplier, $no_hp, $kategori) {
+    $stmt = $conn->prepare("INSERT INTO suppliers (nama_supplier, no_hp, kategori) VALUES (?, ?, ?)");
     
     $stmt->bind_param("sss", $nama_supplier, $no_hp, $kategori); 
     
@@ -40,8 +40,8 @@ function tambahSupplier($koneksi, $nama_supplier, $no_hp, $kategori) {
     exit();
 }
 
-function ubahSupplier($koneksi, $id_supplier, $nama_supplier, $no_hp, $kategori) {
-    $stmt = $koneksi->prepare("UPDATE suppliers SET nama_supplier = ?, no_hp = ?, kategori = ? WHERE id_supplier = ?");
+function ubahSupplier($conn, $id_supplier, $nama_supplier, $no_hp, $kategori) {
+    $stmt = $conn->prepare("UPDATE suppliers SET nama_supplier = ?, no_hp = ?, kategori = ? WHERE id_supplier = ?");
 
     $stmt->bind_param("sssi", $nama_supplier, $no_hp, $kategori, $id_supplier);
 
@@ -54,8 +54,8 @@ function ubahSupplier($koneksi, $id_supplier, $nama_supplier, $no_hp, $kategori)
     exit();
 }
 
-function arsipSupplier($koneksi, $id_supplier) {
-    $stmt = $koneksi->prepare("UPDATE suppliers SET is_active = '0' WHERE id_supplier = ?");
+function arsipSupplier($conn, $id_supplier) {
+    $stmt = $conn->prepare("UPDATE suppliers SET is_active = '0' WHERE id_supplier = ?");
     
     $stmt->bind_param("i", $id_supplier);
     
