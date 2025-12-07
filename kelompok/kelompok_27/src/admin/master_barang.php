@@ -96,6 +96,9 @@ $pesan = $_GET['pesan'] ?? '';
                 alertDiv.style.borderRadius = '10px';
                 alertDiv.style.margin = '0 0 20px 0';
                 alertDiv.style.boxShadow = '0 6px 16px rgba(0,0,0,0.04)';
+                alertDiv.style.margin = '25px';
+                alertDiv.style.marginRight = '25px';
+
 
                 var strong = document.createElement('strong');
                 strong.innerText = serverStatus === 'sukses' ? 'Sukses: ' : 'Gagal: ';
