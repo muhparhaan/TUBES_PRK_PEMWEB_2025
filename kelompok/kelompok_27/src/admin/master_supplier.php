@@ -113,7 +113,7 @@ $pesan = $_GET['pesan'] ?? '';
                         <h1 style="color: #1B3C53; font-weight: 800; font-size: 1.8rem;">
                             <i class="fas fa-boxes mr-2"></i> Data Penitip Barang
                         </h1>
-                        <p class="text-muted m-0">Kelola data mahasiswa yang menitipkan barang</p>
+                        <p class="text-muted m-0">Kelola Data Penitip Barang (Internal & Eksternal)</p>
                     </div>
                 </div>
             </div>
