@@ -37,7 +37,7 @@ ubahBarang($conn, $id_barang, $nama_barang, $harga_jual, $stok, $id_supplier);  
 // 2. LOGIC UNTUK GET (ARSIP/SOFT DELETE)
 // ----------------------
 if (isset($_GET['action']) && $_GET['action'] === 'arsip' && isset($_GET['id'])) {
-    // Logika SOFT DELETE akan dipanggil di Step I.4
+    arsipBarang($conn, $_GET['id']);
 }
 
 // ----------------------
@@ -74,6 +74,21 @@ function ubahBarang($conn, $id_barang, $nama_barang, $harga_jual, $stok, $id_sup
         header("Location: ../admin/master_barang.php?status=sukses&pesan=Barang berhasil diubah!");
     } else {
         header("Location: ../admin/master_barang.php?status=error&pesan=Gagal mengubah Barang: " . $stmt->error);
+    }
+    $stmt->close();
+    exit();
+}
+
+function arsipBarang($conn, $id_barang) {
+    // Soft Delete: Mengubah kolom is_active menjadi '0' (Tidak Aktif/Arsip)
+    $stmt = $conn->prepare("UPDATE barang SET is_active = '0' WHERE id_barang = ?");
+    
+    $stmt->bind_param("i", $id_barang);
+    
+    if ($stmt->execute()) {
+        header("Location: ../admin/master_barang.php?status=sukses&pesan=Barang berhasil diarsipkan!");
+    } else {
+        header("Location: ../admin/master_barang.php?status=error&pesan=Gagal mengarsipkan Barang: " . $stmt->error);
     }
     $stmt->close();
     exit();
