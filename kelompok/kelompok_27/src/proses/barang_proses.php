@@ -26,8 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             tambahBarang($conn, $nama_barang, $harga_jual, $stok, $id_supplier);
             break;
         case 'ubah':
-            // Logika UPDATE akan dipanggil di Step I.3
-            break;
+ubahBarang($conn, $id_barang, $nama_barang, $harga_jual, $stok, $id_supplier);            break;
         default:
             header("Location: ../admin/master_barang.php?status=error&pesan=Aksi tidak dikenal");
             exit();
@@ -59,6 +58,22 @@ function tambahBarang($conn, $nama_barang, $harga_jual, $stok, $id_supplier) {
         header("Location: ../admin/master_barang.php?status=sukses&pesan=Barang berhasil ditambahkan!");
     } else {
         header("Location: ../admin/master_barang.php?status=error&pesan=Gagal menambahkan Barang: " . $stmt->error);
+    }
+    $stmt->close();
+    exit();
+}
+
+function ubahBarang($conn, $id_barang, $nama_barang, $harga_jual, $stok, $id_supplier) {
+    // Menggunakan prepared statement untuk UPDATE data barang berdasarkan id_barang
+    $stmt = $conn->prepare("UPDATE barang SET nama_barang = ?, harga_jual = ?, stok = ?, id_supplier = ? WHERE id_barang = ?");
+    
+    // Binding parameter: 'sdsi' (barang, jual, stok, supplier ID) + 'i' (barang ID)
+    $stmt->bind_param("sdsii", $nama_barang, $harga_jual, $stok, $id_supplier, $id_barang); 
+    
+    if ($stmt->execute()) {
+        header("Location: ../admin/master_barang.php?status=sukses&pesan=Barang berhasil diubah!");
+    } else {
+        header("Location: ../admin/master_barang.php?status=error&pesan=Gagal mengubah Barang: " . $stmt->error);
     }
     $stmt->close();
     exit();
