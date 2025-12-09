@@ -1,3 +1,16 @@
+<?php
+// 1. CEK APALAH SESI SUDAH DIMULAI
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// 2. CEK APAKAH USER SUDAH LOGIN
+// Jika belum login tapi mencoba buka halaman ini, tendang ke login
+if (!isset($_SESSION['login'])) {
+    header("Location: ../index.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -15,3 +28,5 @@
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
+
+<div id="wrapper">
