@@ -60,12 +60,33 @@ elseif ($act == 'hapus') {
         exit;
     }
 
-    $query = "DELETE FROM users WHERE id_user='$id'";
+    mysqli_begin_transaction($conn);
+    
+    try {
 
-    if (mysqli_query($conn, $query)) {
+        $query_detail = "DELETE dt FROM detail_transaksi dt 
+                        INNER JOIN transaksi t ON dt.id_transaksi = t.id_transaksi 
+                        WHERE t.id_user = '$id'";
+        if (!mysqli_query($conn, $query_detail)) {
+            throw new Exception("Gagal hapus detail transaksi");
+        }
+
+        $query_transaksi = "DELETE FROM transaksi WHERE id_user='$id'";
+        if (!mysqli_query($conn, $query_transaksi)) {
+            throw new Exception("Gagal hapus transaksi");
+        }
+
+
+        $query = "DELETE FROM users WHERE id_user='$id'";
+        if (!mysqli_query($conn, $query)) {
+            throw new Exception("Gagal hapus user");
+        }
+
+        mysqli_commit($conn);
         header("Location: ../admin/master_user.php?status=sukses");
-    } else {
-        header("Location: ../admin/master_user.php?status=gagal");
+    } catch (Exception $e) {
+        mysqli_rollback($conn);
+        header("Location: ../admin/master_user.php?status=gagal&error=" . urlencode($e->getMessage()));
     }
 }
 ?>
