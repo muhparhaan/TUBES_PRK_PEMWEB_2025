@@ -6,7 +6,6 @@
     --color-text-dark: #2C3E50;
 }
 
-
 body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--color-bg-light);
@@ -22,7 +21,6 @@ h6 {
     font-weight: 600;
     color: var(--color-primary-dark);
 }
-
 
 .sidebar {
     min-height: 100vh;
@@ -59,7 +57,6 @@ h6 {
     transform: translateX(5px);
 }
 
-
 .sidebar a.nav-link.active {
     background-color: var(--color-accent-beige) !important;
     color: white !important;
@@ -77,10 +74,10 @@ h6 {
     padding-left: 15px;
 }
 
-
 .content {
     padding: 30px;
 }
+
 
 .card {
     border: none;
@@ -88,79 +85,4 @@ h6 {
     background-color: white;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
-}
-
-.card-header-modern {
-    background-color: white;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    padding: 1.2rem 1.5rem;
-    font-weight: 600;
-    color: var(--color-primary-dark);
-    border-top-left-radius: 12px !important;
-    border-top-right-radius: 12px !important;
-}
-
-
-.btn-primary-modern {
-    background-color: var(--color-primary-muted);
-    border-color: var(--color-primary-muted);
-    padding: 10px 20px;
-    font-weight: 500;
-    border-radius: 8px;
-    color: white;
-    transition: all 0.3s;
-}
-
-.btn-primary-modern:hover {
-    background-color: var(--color-primary-dark);
-    border-color: var(--color-primary-dark);
-    color: white;
-    transform: translateY(-1px);
-}
-
-
-.badge-modern-beige {
-    background-color: var(--color-accent-beige);
-    color: white;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 20px;
-}
-
-.bg-gradient-login {
-    background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-muted) 100%);
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.login-card {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    max-width: 450px;
-    width: 100%;
-}
-
-.form-control-modern {
-    border: 2px solid #e1e5e9;
-    border-radius: 0 10px 10px 0;
-    padding: 12px 15px;
-    background-color: #fcfcfc;
-}
-
-.form-control-modern:focus {
-    border-color: var(--color-primary-muted);
-    background-color: white;
-    box-shadow: none;
-}
-
-.input-group-text-modern {
-    background: #fcfcfc;
-    border: 2px solid #e1e5e9;
-    border-right: none;
-    border-radius: 10px 0 0 10px;
-    color: var(--color-primary-muted);
 }
