@@ -15,7 +15,8 @@ $total_bayar = $_POST['total_bayar'] ?? 0;
 $metode = $_POST['metode_pembayaran'] ?? 'cash';
 $tanggal_jam = date('Y-m-d H:i:s');
 
-$no_faktur = "INV-" . date('YmdHis') . "-" . rand(10,99);
+$urut = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*)+1 as nomor FROM transaksi"))['nomor'];
+$no_faktur = "TRX-" . str_pad($urut, 5, "0", STR_PAD_LEFT);
 
 if (empty($_POST['id_barang'])) {
     echo "<script>alert('Keranjang kosong! Pilih barang dulu.'); window.history.back();</script>";
