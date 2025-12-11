@@ -21,6 +21,11 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
             </li>
         <?php else: ?>
             <li class="nav-item">
+                <a href="../staff/dashboard.php" class="nav-link <?= ($page == 'dashboard.php') ? 'active' : ''; ?>">
+                   <i class="fas fa-home me-3 text-center" style="width: 20px;"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="../staff/transaksi.php" class="nav-link <?= ($page == 'transaksi.php') ? 'active' : ''; ?>">
                    <i class="fas fa-cash-register me-3 text-center" style="width: 20px;"></i> Transaksi
                 </a>
