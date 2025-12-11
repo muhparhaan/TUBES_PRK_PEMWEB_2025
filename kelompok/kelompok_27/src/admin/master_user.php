@@ -125,7 +125,7 @@ $pesan = $_GET['pesan'] ?? '';
                                     </button>
                                     
                                     <?php if($u['id_user'] != $_SESSION['id_user']): ?>
-                                        <a href="../proses/user_proses.php?action=hapus&id=<?= $u['id_user']; ?>" 
+                                        <a href="../proses/user_proses.php?act=hapus&id=<?= $u['id_user']; ?>" 
                                            class="btn btn-danger btn-sm" 
                                            onclick="return confirm('Yakin ingin menghapus user <?= $u['username']; ?>? Akses akan hilang permanen.')"
                                            title="Hapus">
@@ -154,10 +154,10 @@ $pesan = $_GET['pesan'] ?? '';
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="formUser" action="../proses/user_proses.php" method="POST">
+            <form id="formUser" action="../proses/user_proses.php?act=tambah" method="POST">
                 <div class="modal-body p-4">
                     <input type="hidden" name="id_user" id="id_user">
-                    <input type="hidden" name="action" id="action" value="tambah"> 
+                    <input type="hidden" name="act" id="act" value="tambah"> 
 
                     <div class="form-group mb-4">
                         <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
@@ -206,7 +206,8 @@ $pesan = $_GET['pesan'] ?? '';
 <script>
 function resetModal() {
     document.getElementById('modalTambahUbahLabel').innerHTML = '<i class="fas fa-user-plus mr-2"></i> Tambah User Baru';
-    document.getElementById('action').value = 'tambah';
+    document.getElementById('act').value = 'tambah';
+    document.getElementById('formUser').action = '../proses/user_proses.php?act=tambah';
     document.getElementById('id_user').value = '';
     document.getElementById('username').value = '';
     document.getElementById('password').value = ''; 
@@ -232,7 +233,8 @@ function handleEditClick(el) {
     var role = el.getAttribute('data-role');
 
     document.getElementById('modalTambahUbahLabel').innerHTML = '<i class="fas fa-edit mr-2"></i> Edit User';
-    document.getElementById('action').value = 'ubah';
+    document.getElementById('act').value = 'edit';
+    document.getElementById('formUser').action = '../proses/user_proses.php?act=edit';
     document.getElementById('id_user').value = id;
     document.getElementById('username').value = username;
     document.getElementById('role').value = role;
